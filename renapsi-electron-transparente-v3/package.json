@@ -1,6 +1,6 @@
 {
   "name": "renapsi-electron-transparente-v3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pesquisa de Abrangencia — app desktop com instalador NSIS e atualização automática via GitHub Releases.",
   "main": "electron/main.js",
   "author": "Renapsi",
