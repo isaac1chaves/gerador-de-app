@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pesquisa de Abrangência</title>
+  <meta name="description" content="Versão compacta e flutuante da Pesquisa de Abrangência em layout escuro compacto e legível." />
+  <link rel="icon" type="image/x-icon" href="../build/icon.ico" />
+  <link rel="stylesheet" href="./assets/css/app.css" />
+</head>
+<body>
+  <main class="app-shell" aria-label="Pesquisa de Abrangência">
+    <section class="topbar">
+      <section id="out" class="result" aria-live="polite" aria-atomic="true">
+        <div class="result-main"><div class="result-pill is-empty" title="Digite ou cole uma cidade para consultar"><span class="title">Consulta rápida</span><span class="sub">Digite o município</span></div></div>
+      </section>
+      <section class="search" role="search">
+        <div class="field">
+          <label class="sr-only" for="q">Pesquisar município</label>
+          <input id="q" type="text" placeholder="Digite ou cole o município" aria-label="Pesquisar município" />
+        </div>
+      </section>
+      <button id="copyBtn" type="button" class="copy-btn" aria-label="Colar da área de transferência" title="Colar da área de transferência">📋</button>
+    </section>
+    <section id="outSuggest" class="suggest-wrap" aria-live="polite" aria-atomic="true" hidden></section>
+  </main>
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/utils.js"></script>
+  <script src="./assets/js/search-engine.js"></script>
+  <script src="./assets/js/ui-core.js"></script>
+  <script src="./assets/js/chips.js"></script>
+  <script src="./assets/js/result.js"></script>
+  <script src="./assets/js/search-actions.js"></script>
+  <script src="./assets/js/clipboard.js"></script>
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>
