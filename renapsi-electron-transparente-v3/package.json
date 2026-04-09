@@ -1,0 +1,59 @@
+{
+  "name": "renapsi-electron-transparente-v3",
+  "version": "1.0.0",
+  "description": "Pesquisa de Abrangencia — instalador NSIS do app desktop.",
+  "main": "electron/main.js",
+  "author": "Renapsi",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dist": "electron-builder --win nsis --publish never"
+  },
+  "devDependencies": {
+    "electron": "^41.1.1",
+    "electron-builder": "^26.8.2"
+  },
+  "build": {
+    "appId": "com.renapsi.buscaabrangencia",
+    "productName": "Pesquisa de Abrangencia",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "site/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "allowElevation": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "artifactName": "${productName} Setup ${version}.${ext}",
+      "uninstallDisplayName": "Pesquisa de Abrangencia",
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaac1chaves/atualizador.git"
+  }
+}
