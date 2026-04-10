@@ -100,7 +100,7 @@ function createMainWindow() {
     fullscreenable: false,
     frame: false,
     transparent: true,
-    hasShadow: true,
+    hasShadow: false,
     backgroundColor: '#00000000',
     autoHideMenuBar: true,
     icon: path.join(__dirname, '..', 'build', 'icon.ico'),
