@@ -361,3 +361,40 @@ html, body {
     justify-content: flex-start;
   }
 }
+.topbar {
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+
+/* campo de texto: sem glow ao focar */
+.search input[type="text"] {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.search input[type="text"]:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* botão verde da esquerda: mantém formato, tira halo */
+.copy-btn {
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+
+/* badge da direita: mantém a “caixinha”, tira aura */
+.result-pill {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* sugestões: sem brilho */
+.suggest,
+.sug-pill {
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
