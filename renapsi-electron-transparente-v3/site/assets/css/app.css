@@ -36,8 +36,12 @@
   --nao-border: #c78b20;
 }
 
-* { box-sizing: border-box; }
-html, body {
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
   font-family: 'Segoe UI Variable', 'Segoe UI', Inter, Roboto, Arial, sans-serif;
   background: transparent;
@@ -60,6 +64,7 @@ html, body {
   margin-bottom: 8px;
 }
 
+/* VOLTA A CÁPSULA ESCURA, MAS SEM AURA */
 .topbar {
   min-height: 58px;
   display: grid;
@@ -67,13 +72,14 @@ html, body {
   grid-template-areas: 'copy search result';
   gap: 10px;
   align-items: center;
-  padding: 0;
-  border-radius: 0;
-  background: transparent !important;
-  border: none !important;
+  padding: 7px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--shell-bg-2), var(--shell-bg));
+  border: 2px solid var(--shell-border);
   box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
 }
-
 
 .result,
 .search {
@@ -87,14 +93,13 @@ html, body {
 
 .result {
   grid-area: result;
+  overflow: visible;
 }
 
 .search {
   grid-area: search;
-}
-
-.result {
-  overflow: visible;
+  display: flex;
+  align-items: center;
 }
 
 .result-main {
@@ -116,7 +121,8 @@ html, body {
   gap: 1px;
   padding: 6px 10px;
   line-height: 1.05;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .result-pill .title {
@@ -167,15 +173,11 @@ html, body {
   display: none !important;
 }
 
-.search {
-  display: flex;
-  align-items: center;
-}
-
 .field {
   width: 100%;
 }
 
+/* CAMPO SEM AURA */
 .search input[type="text"] {
   width: 100%;
   min-height: 38px;
@@ -187,8 +189,8 @@ html, body {
   font-size: 14px;
   font-weight: 500;
   outline: none;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-  transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
+  box-shadow: none !important;
+  transition: border-color .15s ease, background-color .15s ease;
 }
 
 .search input[type="text"]::placeholder {
@@ -198,10 +200,12 @@ html, body {
 
 .search input[type="text"]:focus {
   border-color: #6f747a;
-  box-shadow: 0 0 0 3px rgba(69, 213, 104, 0.14);
+  box-shadow: none !important;
+  outline: none !important;
   background: #121519;
 }
 
+/* BOTÃO VERDE SEM HALO */
 .copy-btn {
   grid-area: copy;
   width: 32px;
@@ -210,7 +214,9 @@ html, body {
   border-radius: 999px;
   border: 2px solid var(--green);
   background: radial-gradient(circle at 30% 30%, #f6fff8, #dff8e6 70%);
-  box-shadow: 0 0 0 2px rgba(69, 213, 104, 0.10), 0 6px 12px rgba(0,0,0,0.18);
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
   color: transparent;
   font-size: 0;
   cursor: pointer;
@@ -251,9 +257,15 @@ html, body {
   margin: 0;
 }
 
-.suggest-wrap[hidden] { display: none; }
-.suggest-wrap.is-measuring { visibility: hidden; }
+.suggest-wrap[hidden] {
+  display: none;
+}
 
+.suggest-wrap.is-measuring {
+  visibility: hidden;
+}
+
+/* SUGESTÃO SEM AURA */
 .suggest {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -263,7 +275,9 @@ html, body {
   border-radius: 18px;
   background: linear-gradient(180deg, #24272b, #1b1e22);
   border: 1.5px solid var(--surface-border);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), var(--shadow);
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
 }
 
 .sug-icon {
@@ -309,14 +323,38 @@ html, body {
   font-weight: 700;
   font-size: 12px;
   white-space: nowrap;
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
 }
 
-.sug-pill.ok  { background: #132118; border-color: #2e8a46; color: #8de6a5; }
-.sug-pill.bra { background: #1e1831; border-color: #6652b8; color: #c8bbff; }
-.sug-pill.ana { background: #2a1717; border-color: #bf5252; color: #ffb1b1; }
-.sug-pill.nao { background: #2b2316; border-color: #aa7a2d; color: #ffd998; }
+.sug-pill.ok {
+  background: #132118;
+  border-color: #2e8a46;
+  color: #8de6a5;
+}
 
-.anim-drop { animation: popIn .14s ease-out both; }
+.sug-pill.bra {
+  background: #1e1831;
+  border-color: #6652b8;
+  color: #c8bbff;
+}
+
+.sug-pill.ana {
+  background: #2a1717;
+  border-color: #bf5252;
+  color: #ffb1b1;
+}
+
+.sug-pill.nao {
+  background: #2b2316;
+  border-color: #aa7a2d;
+  color: #ffd998;
+}
+
+.anim-drop {
+  animation: popIn .14s ease-out both;
+}
 
 .sr-only {
   position: absolute !important;
@@ -331,70 +369,45 @@ html, body {
 }
 
 @keyframes popIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 760px) {
   .app-shell {
     max-width: 100%;
   }
+
   .topbar {
     grid-template-columns: 32px 1fr 128px;
     grid-template-areas: 'copy search result';
     gap: 8px;
   }
+
   .result-pill .title {
     font-size: 12px;
   }
+
   .result-pill .sub {
     font-size: 9px;
   }
+
   .search input[type="text"] {
     font-size: 13px;
   }
+
   .suggest {
     grid-template-columns: auto 1fr;
   }
+
   .sug-actions {
     grid-column: 1 / -1;
     justify-content: flex-start;
   }
-}
-.topbar {
-  box-shadow: none !important;
-  filter: none !important;
-  outline: none !important;
-}
-
-/* campo de texto: sem glow ao focar */
-.search input[type="text"] {
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.search input[type="text"]:focus {
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* botão verde da esquerda: mantém formato, tira halo */
-.copy-btn {
-  box-shadow: none !important;
-  filter: none !important;
-  outline: none !important;
-}
-
-/* badge da direita: mantém a “caixinha”, tira aura */
-.result-pill {
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* sugestões: sem brilho */
-.suggest,
-.sug-pill {
-  box-shadow: none !important;
-  filter: none !important;
-  outline: none !important;
 }
