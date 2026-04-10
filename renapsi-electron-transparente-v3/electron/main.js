@@ -169,7 +169,7 @@ function setupAutoUpdater() {
   autoUpdater.on('update-downloaded', async (info) => {
     log.info('Atualização baixada:', info?.version || '')
     if (!mainWindow || mainWindow.isDestroyed()) {
-      autoUpdater.quitAndInstall()
+      autoUpdater.quitAndInstall(true, true)
       return
     }
     const result = await dialog.showMessageBox(mainWindow, {
@@ -182,7 +182,7 @@ function setupAutoUpdater() {
       detail: 'Deseja reiniciar o app agora para concluir a atualização?'
     })
     if (result.response === 0) {
-      autoUpdater.quitAndInstall()
+      autoUpdater.quitAndInstall(true, true)
     }
   })
 
