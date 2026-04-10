@@ -47,18 +47,18 @@
         }
       ]
     },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "runAfterFinish": true,
-      "allowElevation": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
-      "artifactName": "${productName} Setup ${version}.${ext}",
-      "uninstallDisplayName": "Pesquisa de Abrangencia",
-      "allowToChangeInstallationDirectory": true
-    }
+"nsis": {
+  "oneClick": true,
+  "perMachine": false,
+  "runAfterFinish": true,
+  "allowElevation": false,
+  "installerIcon": "build/icon.ico",
+  "uninstallerIcon": "build/icon.ico",
+  "installerHeaderIcon": "build/icon.ico",
+  "artifactName": "${productName} Setup ${version}.${ext}",
+  "uninstallDisplayName": "Pesquisa de Abrangencia",
+  "allowToChangeInstallationDirectory": false
+}
   },
   "dependencies": {
     "electron-log": "^5.2.4",
