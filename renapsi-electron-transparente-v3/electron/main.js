@@ -1,3 +1,5 @@
+const ACTIVE_OPACITY = 1
+const INACTIVE_OPACITY = 0.78
 const path = require('node:path')
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
