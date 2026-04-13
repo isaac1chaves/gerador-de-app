@@ -17,6 +17,21 @@ function markInteractiveNoDrag(root = document) {
   })
 }
 
+let layoutBatchDepth = 0
+let pendingSyncAfterBatch = false
+
+function beginLayoutBatch() {
+  layoutBatchDepth += 1
+}
+
+function endLayoutBatch() {
+  layoutBatchDepth = Math.max(0, layoutBatchDepth - 1)
+  if (layoutBatchDepth === 0 && pendingSyncAfterBatch) {
+    pendingSyncAfterBatch = false
+    syncContentBounds()
+  }
+}
+
 function buildScaleShell() {
   const existingNodes = Array.from(document.body.childNodes)
   const stage = document.createElement('div')
@@ -166,8 +181,14 @@ function injectShell() {
     document.body.appendChild(handle)
   })
 
+
   let contentSizeFrame = 0
   const syncContentBounds = () => {
+    if (layoutBatchDepth > 0) {
+      pendingSyncAfterBatch = true
+      return
+    }
+
     if (contentSizeFrame) cancelAnimationFrame(contentSizeFrame)
     contentSizeFrame = requestAnimationFrame(() => {
       contentSizeFrame = 0
@@ -183,12 +204,19 @@ function injectShell() {
     })
   }
 
-  const resizeObserver = new ResizeObserver(syncContentBounds)
+  window.addEventListener('renapsi:layout-batch-start', beginLayoutBatch)
+  window.addEventListener('renapsi:layout-batch-end', endLayoutBatch)
+
+  const resizeObserver = new ResizeObserver(() => {
+    syncContentBounds()
+  })
   resizeObserver.observe(scaleRoot)
   const shell = scaleRoot.querySelector('.app-shell')
   if (shell) resizeObserver.observe(shell)
 
-  const mutationObserver = new MutationObserver(syncContentBounds)
+  const mutationObserver = new MutationObserver(() => {
+    syncContentBounds()
+  })
   mutationObserver.observe(scaleRoot, {
     subtree: true,
     childList: true,

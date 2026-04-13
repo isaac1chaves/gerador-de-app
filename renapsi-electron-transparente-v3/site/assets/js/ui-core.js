@@ -8,6 +8,18 @@ function getAppShell(){ return document.querySelector('.app-shell'); }
 function getSuggestGap(){ return 12; }
 function getFlipHysteresis(){ return 28; }
 
+let suggestPlacementFrame = 0;
+
+function emitLayoutBatch(eventName){
+  window.dispatchEvent(new Event(eventName));
+}
+
+function cancelSuggestPlacementFrame(){
+  if (!suggestPlacementFrame) return;
+  cancelAnimationFrame(suggestPlacementFrame);
+  suggestPlacementFrame = 0;
+}
+
 function resetSuggestPlacement(){
   const shell = getAppShell();
   if (!shell) return;
@@ -48,35 +60,68 @@ function applySuggestPlacement(wrap){
 }
 
 function updateSuggestPlacement(wrap, immediate = false){
+  if (!wrap || wrap.hidden || wrap.classList.contains('is-measuring')) return;
+
   if (immediate) {
+    cancelSuggestPlacementFrame();
     applySuggestPlacement(wrap);
     return;
   }
-  requestAnimationFrame(() => requestAnimationFrame(() => applySuggestPlacement(wrap)));
+
+  cancelSuggestPlacementFrame();
+  suggestPlacementFrame = requestAnimationFrame(() => {
+    suggestPlacementFrame = 0;
+    applySuggestPlacement(wrap);
+  });
 }
 
 function openSuggestWrap(wrap){
   if (!wrap) return;
+
+  const shell = getAppShell();
+  const box = wrap.querySelector('.suggest');
+
+  cancelSuggestPlacementFrame();
+  emitLayoutBatch('renapsi:layout-batch-start');
+
   wrap.hidden = false;
   wrap.classList.add('is-open');
   wrap.classList.add('is-measuring');
-  updateSuggestPlacement(wrap, true);
+
+  if (!shell || !box) {
+    resetSuggestPlacement();
+  } else {
+    shell.classList.toggle('suggest-up', shouldSuggestFlipUp(box));
+  }
+
   requestAnimationFrame(() => {
-    wrap.classList.remove('is-measuring');
-    updateSuggestPlacement(wrap, false);
+    emitLayoutBatch('renapsi:layout-batch-end');
+
+    requestAnimationFrame(() => {
+      wrap.classList.remove('is-measuring');
+    });
   });
 }
 
 function closeSuggestWrap(wrap){
   if (!wrap) return;
+
+  cancelSuggestPlacementFrame();
+  emitLayoutBatch('renapsi:layout-batch-start');
+
   wrap.classList.remove('is-open');
   wrap.classList.remove('is-measuring');
   wrap.hidden = true;
   resetSuggestPlacement();
+
+  requestAnimationFrame(() => {
+    emitLayoutBatch('renapsi:layout-batch-end');
+  });
 }
 
 function hardResetSuggestWrap(wrap){
   if (!wrap) return;
+  cancelSuggestPlacementFrame();
   wrap.innerHTML = '';
   wrap.classList.remove('is-open');
   wrap.classList.remove('is-measuring');

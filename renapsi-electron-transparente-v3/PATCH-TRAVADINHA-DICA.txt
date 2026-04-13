@@ -1,0 +1,5 @@
+Correcoes aplicadas automaticamente:
+- Batch de layout no preload para evitar multiplos app:content-size durante o flip da dica.
+- openSuggestWrap agora decide a posicao final antes de revelar a dica.
+- closeSuggestWrap e hardResetSuggestWrap cancelam frames pendentes.
+- .suggest-wrap.is-measuring agora usa opacity: 0 e pointer-events: none.
