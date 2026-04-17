@@ -1,15 +1,9 @@
-# Pesquisa de Abrangência — Layout flutuante sem fundo azul
+## Pesquisa de Abrangência — layout centralizado
 
-Mantém:
-- bolha de resposta no estilo antigo
-- texto inicial antigo
-- conteúdo interno da caixa de dica antigo
-
-Ajustes desta versão:
-- removido o fundo azul/gradiente do body
-- listas de cidades abertas removidas
-- botão de tema removido
-- botão de reportar bugs removido
-
-- reaplicadas animações antigas (badge, dica, hover do botão de colar e foco da busca)
-- ao clicar no campo de texto, todo o conteúdo atual é selecionado para colar por cima
+### Ajustes desta versão
+- o site centraliza o app ao abrir no navegador
+- a cápsula principal fica fixa no centro visual
+- a caixa de dica abre para baixo por padrão
+- quando faltar espaço embaixo, a dica se adapta e abre para cima
+- a mecânica de decisão da direção continua no site (HTML/CSS/JS)
+- o Electron apenas acompanha a altura necessária da interface

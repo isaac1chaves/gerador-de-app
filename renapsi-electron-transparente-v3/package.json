@@ -1,6 +1,6 @@
 {
   "name": "renapsi-electron-transparente-v3",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Pesquisa de Abrangencia",
   "main": "electron/main.js",
   "author": "Renapsi",
@@ -14,6 +14,14 @@
   "devDependencies": {
     "electron": "^41.1.1",
     "electron-builder": "^26.8.2"
+  },
+  "dependencies": {
+    "electron-log": "^5.2.4",
+    "electron-updater": "^6.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaac1chaves/gerador-de-app.git"
   },
   "build": {
     "appId": "com.renapsi.buscaabrangencia",
@@ -37,35 +45,25 @@
         }
       ],
       "icon": "build/icon.ico",
-      "artifactName": "${productName} Setup ${version}.${ext}",
-      "publish": [
-        {
-          "provider": "github",
-          "owner": "isaac1chaves",
-          "repo": "gerador-de-app",
-          "releaseType": "release"
-        }
-      ]
+      "artifactName": "${productName} Setup ${version}.${ext}"
     },
-"nsis": {
-  "oneClick": true,
-  "perMachine": false,
-  "runAfterFinish": true,
-  "allowElevation": false,
-  "installerIcon": "build/icon.ico",
-  "uninstallerIcon": "build/icon.ico",
-  "installerHeaderIcon": "build/icon.ico",
-  "artifactName": "${productName} Setup ${version}.${ext}",
-  "uninstallDisplayName": "Pesquisa de Abrangencia",
-  "allowToChangeInstallationDirectory": false
-}
-  },
-  "dependencies": {
-    "electron-log": "^5.2.4",
-    "electron-updater": "^6.6.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/isaac1chaves/gerador-de-app.git"
+    "publish": {
+      "provider": "github",
+      "owner": "isaac1chaves",
+      "repo": "gerador-de-app",
+      "releaseType": "release"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "allowElevation": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "artifactName": "${productName} Setup ${version}.${ext}",
+      "uninstallDisplayName": "Pesquisa de Abrangencia",
+      "allowToChangeInstallationDirectory": false
+    }
   }
 }

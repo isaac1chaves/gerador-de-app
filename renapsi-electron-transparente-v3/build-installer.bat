@@ -1,14 +1,17 @@
 @echo off
+setlocal
+
 title Gerar instalador NSIS
+
 echo ================================
-echo  Instalando dependencias...
+echo Instalando dependencias...
 echo ================================
 call npm install
 if errorlevel 1 goto erro
 
 echo.
 echo ================================
-echo  Gerando instalador local...
+echo Gerando instalador local...
 echo ================================
 call npm run dist
 if errorlevel 1 goto erro
@@ -22,4 +25,4 @@ exit /b 0
 echo.
 echo Ocorreu um erro durante o processo.
 pause
-exit /b 1
+exit /b 1

@@ -1,31 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Pesquisa de Abrangência</title>
-  <meta name="description" content="Versão compacta e flutuante da Pesquisa de Abrangência em layout escuro compacto e legível." />
-  <link rel="icon" type="image/x-icon" href="../build/icon.ico" />
   <link rel="stylesheet" href="./assets/css/app.css" />
 </head>
 <body>
   <main class="app-shell" aria-label="Pesquisa de Abrangência">
-    <section class="topbar">
-      <section id="out" class="result" aria-live="polite" aria-atomic="true">
-        <div class="result-main"><div class="result-pill is-empty" title="Digite ou cole uma cidade para consultar"><span class="title">Consulta rápida</span><span class="sub">Digite o município</span></div></div>
-      </section>
-      <section class="search" role="search">
-        <div class="field">
+    <section class="app-stage">
+      <div id="outSuggest" class="suggest-wrap" hidden></div>
+      <div class="topbar">
+        <button id="copyBtn" class="copy-btn" type="button" aria-label="Colar texto da área de transferência">📋</button>
+        <div class="search field">
           <label class="sr-only" for="q">Pesquisar município</label>
-          <input id="q" type="text" placeholder="Digite ou cole o município" aria-label="Pesquisar município" />
+          <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Cole ou digite um texto contendo a cidade." />
         </div>
-      </section>
-      <button id="copyBtn" type="button" class="copy-btn" aria-label="Colar da área de transferência" title="Colar da área de transferência">📋</button>
+        <div id="out" class="result" aria-live="polite">
+          <div class="result-main">
+            <div class="result-pill is-empty">
+              <span class="title">Consulta rápida</span>
+              <span class="sub">Digite o município</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
-    <section id="outSuggest" class="suggest-wrap" aria-live="polite" aria-atomic="true" hidden></section>
   </main>
-  <script src="./assets/js/data.js"></script>
   <script src="./assets/js/utils.js"></script>
+  <script src="./assets/js/data.js"></script>
   <script src="./assets/js/search-engine.js"></script>
   <script src="./assets/js/ui-core.js"></script>
   <script src="./assets/js/chips.js"></script>

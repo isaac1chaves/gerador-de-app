@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sugestões</title>
+  <style>
+    :root {
+      --surface-border: rgba(137, 149, 169, 0.42);
+      --surface-shadow: rgba(0, 0, 0, 0.38);
+      --text-main: #e7ebf2;
+      --text-soft: #9ea6b4;
+      --ok-bg: rgba(56, 196, 104, .18);
+      --ok-text: #9ff0b7;
+      --ok-border: rgba(56, 196, 104, .72);
+      --ana-bg: rgba(87, 181, 255, .17);
+      --ana-text: #8fd7ff;
+      --ana-border: rgba(87, 181, 255, .7);
+      --bra-bg: rgba(163, 122, 255, .18);
+      --bra-text: #ceb6ff;
+      --bra-border: rgba(163, 122, 255, .74);
+      --nao-bg: rgba(235, 183, 58, .18);
+      --nao-text: #f0d68a;
+      --nao-border: rgba(235, 183, 58, .76);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      color: var(--text-main);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body { -webkit-app-region: no-drag; user-select: none; }
+    .overlay { width: 100%; min-height: 1px; display: block; }
+    .suggest {
+      width: 100%;
+      display: block;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #24272b, #1b1e22);
+      border: 1.5px solid var(--surface-border);
+      box-shadow: 0 12px 28px var(--surface-shadow);
+    }
+    .sug-head { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+    .sug-icon {
+      width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(15, 17, 22, .76); border: 1px solid rgba(137, 149, 169, 0.28); font-size: 15px; line-height: 1;
+    }
+    .sug-title { font-size: 14px; font-weight: 700; line-height: 1.25; margin-bottom: 2px; }
+    .sug-sub { font-size: 11px; line-height: 1.35; color: var(--text-soft); }
+    .sug-actions { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .sug-pill {
+      appearance: none; border: 1px solid transparent; background: rgba(15, 17, 22, .92); color: var(--text-main);
+      padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: transform .12s ease, filter .12s ease, border-color .12s ease;
+    }
+    .sug-pill:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    .sug-pill:active { transform: translateY(0); }
+    .sug-pill.ok { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+    .sug-pill.ana { background: var(--ana-bg); color: var(--ana-text); border-color: var(--ana-border); }
+    .sug-pill.bra { background: var(--bra-bg); color: var(--bra-text); border-color: var(--bra-border); }
+    .sug-pill.nao, .sug-pill.dup { background: var(--nao-bg); color: var(--nao-text); border-color: var(--nao-border); }
+  </style>
+</head>
+<body>
+  <main id="overlay" class="overlay" aria-live="polite"></main>
+  <script>
+    const overlay = document.getElementById('overlay');
+    function escapeHtml(value) {
+      return String(value || '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+    }
+    function reportMetrics() {
+      requestAnimationFrame(() => {
+        const height = Math.ceil(overlay.scrollHeight || document.body.scrollHeight || 0);
+        window.suggestOverlay.reportMetrics({ height });
+      });
+    }
+    function clearOverlay() { overlay.innerHTML = ''; reportMetrics(); }
+    function renderSuggestion(payload) {
+      if (!payload) return clearOverlay();
+      const title = escapeHtml(payload.title || 'Sugestões');
+      const subtitle = escapeHtml(payload.subtitle || '');
+      const suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
+      overlay.innerHTML = `
+        <section class="suggest" role="status">
+          <div class="sug-head">
+            <div class="sug-icon" aria-hidden="true">💡</div>
+            <div>
+              <div class="sug-title">${title}</div>
+              <div class="sug-sub">${subtitle}</div>
+            </div>
+          </div>
+          <div class="sug-actions"></div>
+        </section>
+      `;
+      const actions = overlay.querySelector('.sug-actions');
+      if (!suggestions.length) {
+        const span = document.createElement('span');
+        span.className = 'sug-sub';
+        span.textContent = 'Nenhuma sugestão próxima foi encontrada.';
+        actions.appendChild(span);
+        return reportMetrics();
+      }
+      suggestions.forEach((item) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `sug-pill ${item && item.category ? item.category : 'nao'}`;
+        button.textContent = item && item.text ? item.text : '';
+        button.addEventListener('click', () => window.suggestOverlay.pick({ text: item && item.text ? item.text : '' }));
+        actions.appendChild(button);
+      });
+      reportMetrics();
+    }
+    window.suggestOverlay.onRender(renderSuggestion);
+    window.suggestOverlay.onClear(clearOverlay);
+    window.addEventListener('resize', reportMetrics);
+    window.addEventListener('load', reportMetrics);
+  </script>
+</body>
+</html>
