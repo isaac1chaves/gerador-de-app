@@ -44,35 +44,36 @@ function showDesktopSuggestOverlay(payload) {
   } catch (e) {}
   return false;
 }
-function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], aliasCanonico = null, listasEncontradas = []) {
-  hideDesktopSuggestOverlay();
-  const useDesktopSuggest = isDesktopRuntime() && !!window.desktopSuggest && typeof window.desktopSuggest.show === 'function';
-  const outSug = useDesktopSuggest ? null : ensureOutSuggest();
-  if (outSug) { closeSuggestWrap(outSug); outSug.innerHTML = ''; }
-  const meta = getStatusMeta(status, listasEncontradas);
-  renderCompactResult(meta);
-  if (status !== 'nao' && status !== 'dup') return;
-  const topTitle = status === 'dup' ? 'Precisa revisar o município' : 'Não encontrei uma correspondência exata';
-  let topSub = status === 'dup' ? meta.detail : 'Escolha uma sugestão parecida para aplicar na pesquisa.';
-  if (status === 'nao' && focoCidade) topSub = `Talvez você tenha querido dizer algo próximo de “${focoCidade}”.`;
-  if (useDesktopSuggest) {
-    const items = Array.isArray(sugestoes) ? sugestoes.map((sText) => ({ text: sText, category: sugestaoCategoria(sText) })) : [];
-    showDesktopSuggestOverlay({ title: topTitle, subtitle: topSub, suggestions: items });
-    return;
-  }
-  if (!outSug) return;
-  const sug = document.createElement('div');
+function ensureBrowserSuggestBox(outSug) {
+  if (!outSug) return null;
+  let sug = outSug.querySelector('.suggest');
+  if (sug) return sug;
+
+  sug = document.createElement('div');
   sug.className = 'suggest';
   sug.setAttribute('role', 'status');
   sug.innerHTML = `
     <div class="sug-icon" aria-hidden="true">💡</div>
-    <div>
-      <div class="sug-title">${escapeHtml(topTitle)}</div>
-      <div class="sug-sub">${escapeHtml(topSub)}</div>
+    <div class="sug-copy">
+      <div class="sug-title"></div>
+      <div class="sug-sub"></div>
     </div>
     <div class="sug-actions"></div>
   `;
+  outSug.innerHTML = '';
+  outSug.appendChild(sug);
+  return sug;
+}
+function fillBrowserSuggestBox(sug, termOriginal, topTitle, topSub, sugestoes = []) {
+  if (!sug) return;
+  const titleEl = sug.querySelector('.sug-title');
+  const subEl = sug.querySelector('.sug-sub');
   const actions = sug.querySelector('.sug-actions');
+  if (titleEl) titleEl.textContent = topTitle;
+  if (subEl) subEl.textContent = topSub;
+  if (!actions) return;
+
+  actions.innerHTML = '';
   if (Array.isArray(sugestoes) && sugestoes.length) {
     sugestoes.forEach((sText) => {
       const b = document.createElement('button');
@@ -94,6 +95,40 @@ function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], alia
     span.textContent = 'Nenhuma sugestão próxima foi encontrada.';
     actions.appendChild(span);
   }
-  outSug.appendChild(sug);
-  openSuggestWrap(outSug);
+}
+function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], aliasCanonico = null, listasEncontradas = []) {
+  const useDesktopSuggest = isDesktopRuntime() && !!window.desktopSuggest && typeof window.desktopSuggest.show === 'function';
+  const outSug = useDesktopSuggest ? null : ensureOutSuggest();
+  const meta = getStatusMeta(status, listasEncontradas);
+  renderCompactResult(meta);
+
+  if (status !== 'nao' && status !== 'dup') {
+    hideDesktopSuggestOverlay();
+    if (outSug) {
+      closeSuggestWrap(outSug);
+      outSug.innerHTML = '';
+    }
+    return;
+  }
+
+  const topTitle = status === 'dup' ? 'Precisa revisar o município' : 'Não encontrei uma correspondência exata';
+  let topSub = status === 'dup' ? meta.detail : 'Escolha uma sugestão parecida para aplicar na pesquisa.';
+  if (status === 'nao' && focoCidade) topSub = `Talvez você tenha querido dizer algo próximo de “${focoCidade}”.`;
+
+  if (useDesktopSuggest) {
+    const items = Array.isArray(sugestoes)
+      ? sugestoes.map((sText) => ({ text: sText, category: sugestaoCategoria(sText) }))
+      : [];
+    showDesktopSuggestOverlay({ title: topTitle, subtitle: topSub, suggestions: items });
+    return;
+  }
+
+  if (!outSug) return;
+
+  const wasHidden = outSug.hidden;
+  const sug = ensureBrowserSuggestBox(outSug);
+  fillBrowserSuggestBox(sug, termOriginal, topTitle, topSub, sugestoes);
+
+  if (wasHidden) openSuggestWrap(outSug);
+  else updateSuggestPlacement(outSug, true);
 }

@@ -339,12 +339,13 @@ if (gotTheLock) {
     ipcMain.on('suggest:show', (event, payload) => {
       const win = BrowserWindow.fromWebContents(event.sender);
       if (!payload || !win || !mainWindow || win !== mainWindow) return;
+      const alreadyVisible = !!(suggestWindow && !suggestWindow.isDestroyed() && suggestWindow.isVisible());
       currentSuggestPayload = payload;
-      currentSuggestDirection = 'down';
+      if (!alreadyVisible) currentSuggestDirection = 'down';
       suggestMetrics = { height: estimateSuggestHeight(payload) };
       ensureSuggestWindow();
       sendSuggestPayload(payload);
-      positionSuggestWindow(true);
+      positionSuggestWindow(!alreadyVisible);
     });
     ipcMain.on('suggest:hide', (event) => {
       const win = BrowserWindow.fromWebContents(event.sender);
