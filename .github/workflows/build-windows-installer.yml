@@ -1,5 +1,4 @@
 name: Build Windows Installer
-
 on:
   workflow_dispatch:
 
@@ -9,29 +8,21 @@ permissions:
 jobs:
   build-windows:
     runs-on: windows-latest
-
-    defaults:
-      run:
-        working-directory: renapsi-electron-transparente-v3
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install dependencies
+        working-directory: renapsi-electron-transparente-v3
         run: npm install
-
       - name: Build installer
+        working-directory: renapsi-electron-transparente-v3
         run: npm run dist
-
-      - name: Upload dist as workflow artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-dist
-          path: renapsi-electron-transparente-v3/dist/**
-          retention-days: 7
+          name: windows-installer
+          path: renapsi-electron-transparente-v3/dist/*
