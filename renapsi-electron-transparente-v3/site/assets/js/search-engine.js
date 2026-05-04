@@ -1,7 +1,7 @@
-const setAna = new Set(anapolis.map(normalize));
-const setBra = new Set(brasilia.map(normalize));
-const setCob = new Set(cobertura.map(normalize));
-const allCities = [...anapolis, ...brasilia, ...cobertura];
+const setAna = new Set(Anapolis.map(normalize));
+const setBra = new Set(Brasilia.map(normalize));
+const setCob = new Set(Aceito.map(normalize));
+const allCities = [...Anapolis, ...Brasilia, ...Aceito];
 const normToOriginal = new Map(allCities.map((c) => [normalize(c), c]));
 const dynamicAliases = (() => {
   try {
