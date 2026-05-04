@@ -1,7 +1,7 @@
 function getStatusMeta(status, listasEncontradas = []) {
-  if (status === 'ana') return { cls: 'ana', title: 'Anápolis', detail: 'Cidade atendida pelo núcleo de Anápolis.' };
-  if (status === 'bra') return { cls: 'bra', title: 'Brasília', detail: 'Cidade atendida pelo núcleo de Brasília.' };
-  if (status === 'nossa') return { cls: 'ok', title: 'Atendimento', detail: 'Cidade localizada na cobertura principal.' };
+  if (status === 'ana') return { cls: 'ana', title: 'Anapolis', detail: 'Cidade atendida pelo núcleo de Anápolis.' };
+  if (status === 'bra') return { cls: 'bra', title: 'Brasilia', detail: 'Cidade atendida pelo núcleo de Brasília.' };
+  if (status === 'nossa') return { cls: 'ok', title: 'Aceito', detail: 'Cidade localizada na cobertura principal.' };
   if (status === 'dup') {
     const etiquetas = listasEncontradas.map((k) => k === 'ana' ? 'Anápolis' : k === 'bra' ? 'Brasília' : k === 'nossa' ? 'Cobertura' : k);
     return { cls: 'dup', title: 'Revisar', detail: `A cidade apareceu em múltiplas listas: ${etiquetas.join(' · ')}.` };
