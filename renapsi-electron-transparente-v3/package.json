@@ -1,6 +1,6 @@
 {
   "name": "renapsi-electron-transparente-v3",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Pesquisa de Abrangencia",
   "main": "electron/main.js",
   "author": "Renapsi",
