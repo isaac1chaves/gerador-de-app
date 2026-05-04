@@ -22,8 +22,6 @@ function renderDefaultResult() {
   out.innerHTML = `
     <div class="result-main">
       <div class="result-pill is-empty">
-        <span class="title">Consulta rápida</span>
-        <span class="sub">Digite o município</span>
       </div>
     </div>
   `;
