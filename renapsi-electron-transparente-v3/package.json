@@ -4,7 +4,8 @@
   "description": "Pesquisa de Abrangencia",
   "main": "electron/main.js",
   "author": "Renapsi",
-  "license": "MIT",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
