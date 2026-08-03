@@ -82,8 +82,7 @@ function fillBrowserSuggestBox(sug, termOriginal, topTitle, topSub, sugestoes = 
       b.setAttribute('aria-label', `Usar sugestão ${sText}`);
       b.addEventListener('click', () => {
         rememberAlias(termOriginal, normalize(sText));
-        q.value = sText;
-        buscar();
+        buscar(sText);
       });
       actions.appendChild(b);
     });

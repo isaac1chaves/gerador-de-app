@@ -6,9 +6,9 @@ function hideElectronSuggestOverlay() {
     }
   } catch (e) {}
 }
-function buscar() {
+function buscar(rawOverride = null) {
   try {
-    const raw = q.value || '';
+    const raw = rawOverride === null ? (q.value || '') : String(rawOverride || '');
     if (!raw.trim()) {
       hideElectronSuggestOverlay();
       const outSug = ensureOutSuggest();

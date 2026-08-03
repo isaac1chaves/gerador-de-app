@@ -5,8 +5,7 @@ if (window.desktopSuggest && typeof window.desktopSuggest.onPick === 'function')
     if (!text || !q) return;
     const termOriginal = q.value || '';
     rememberAlias(termOriginal, normalize(text));
-    q.value = text;
-    buscar();
+    buscar(text);
     focusAndSelectSearch();
   });
 }
