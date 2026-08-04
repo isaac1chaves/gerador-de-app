@@ -11,6 +11,13 @@ const dynamicAliases = (() => {
     return new Map();
   }
 })();
+let lastSuggestionChoice = null;
+function forgetAlias(fromRaw) {
+  const keys = new Set([iaNormalizeInput(fromRaw)]);
+  try { keys.add(iaNormalizeInput(extractCity(fromRaw))); } catch (e) {}
+  keys.forEach((key) => { if (key) dynamicAliases.delete(key); });
+  try { localStorage.setItem('aliases', JSON.stringify(Object.fromEntries(dynamicAliases))); } catch (e) {}
+}
 function rememberAlias(fromRaw, toCityText) {
   const k = iaNormalizeInput(fromRaw);
   if (!k || !toCityText) return;

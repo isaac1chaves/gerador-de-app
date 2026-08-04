@@ -15,7 +15,7 @@
         <button id="copyBtn" class="copy-btn" type="button" aria-label="Colar texto da área de transferência">📋</button>
         <div class="search field">
           <label class="sr-only" for="q">Pesquisar município</label>
-          <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="Cole ou digite um texto contendo a cidade." />
+          <div id="q" class="search-editor" contenteditable="true" role="textbox" aria-label="Pesquisar município" data-placeholder="Cole ou digite um texto contendo a cidade." spellcheck="false"></div>
         </div>
         <div id="out" class="result" aria-live="polite">
           <div class="result-main">

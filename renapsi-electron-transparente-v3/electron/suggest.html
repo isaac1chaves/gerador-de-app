@@ -63,6 +63,10 @@
     .sug-pill.ana { background: var(--ana-bg); color: var(--ana-text); border-color: var(--ana-border); }
     .sug-pill.bra { background: var(--bra-bg); color: var(--bra-text); border-color: var(--bra-border); }
     .sug-pill.nao, .sug-pill.dup { background: var(--nao-bg); color: var(--nao-text); border-color: var(--nao-border); }
+    .suggest.undo-mode { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; }
+    .suggest.undo-mode .sug-head { display: contents; }
+    .suggest.undo-mode .sug-actions { margin-top: 0; justify-content: flex-end; }
+    .suggest.undo-mode .sug-pill { min-height: 34px; padding-inline: 16px; }
   </style>
 </head>
 <body>
@@ -85,9 +89,9 @@
       const subtitle = escapeHtml(payload.subtitle || '');
       const suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
       overlay.innerHTML = `
-        <section class="suggest" role="status">
+        <section class="suggest${payload.mode === 'undo' ? ' undo-mode' : ''}" role="status">
           <div class="sug-head">
-            <div class="sug-icon" aria-hidden="true">💡</div>
+            <div class="sug-icon" aria-hidden="true">${payload.mode === 'undo' ? '↶' : '💡'}</div>
             <div>
               <div class="sug-title">${title}</div>
               <div class="sug-sub">${subtitle}</div>
@@ -109,7 +113,7 @@
         button.type = 'button';
         button.className = `sug-pill ${item && item.category ? item.category : 'nao'}`;
         button.textContent = item && item.text ? item.text : '';
-        button.addEventListener('click', () => window.suggestOverlay.pick({ text: item && item.text ? item.text : '' }));
+        button.addEventListener('click', () => window.suggestOverlay.pick({ text: item && item.text ? item.text : '', action: item && item.action ? item.action : '' }));
         actions.appendChild(button);
       });
       reportMetrics();

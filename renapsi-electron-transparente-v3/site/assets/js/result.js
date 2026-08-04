@@ -8,12 +8,12 @@ function getStatusMeta(status, listasEncontradas = []) {
   }
   return { cls: 'nao', title: 'Não localizado', detail: 'Não encontrei essa cidade exatamente como foi digitada.' };
 }
-function renderCompactResult(statusMeta) {
+function renderCompactResult(statusMeta, recognizedCity = null) {
   out.innerHTML = `
     <div class="result-main">
-      <div class="result-pill ${escapeHtml(statusMeta.cls)}">
+      <div class="result-pill ${escapeHtml(statusMeta.cls)}${recognizedCity ? ' has-recognized' : ''}">
         <span class="title">${escapeHtml(statusMeta.title)}</span>
-        <span class="sub">${escapeHtml(statusMeta.detail)}</span>
+        <span class="sub"><span class="recognized-city">${recognizedCity ? `✓ ${escapeHtml(recognizedCity)}` : escapeHtml(statusMeta.detail)}</span></span>
       </div>
     </div>
   `;
@@ -82,6 +82,7 @@ function fillBrowserSuggestBox(sug, termOriginal, topTitle, topSub, sugestoes = 
       b.setAttribute('aria-label', `Usar sugestão ${sText}`);
       b.addEventListener('click', () => {
         rememberAlias(termOriginal, normalize(sText));
+        lastSuggestionChoice = { originalText: termOriginal, selectedCity: sText };
         buscar(sText);
       });
       actions.appendChild(b);
@@ -93,17 +94,58 @@ function fillBrowserSuggestBox(sug, termOriginal, topTitle, topSub, sugestoes = 
     actions.appendChild(span);
   }
 }
-function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], aliasCanonico = null, listasEncontradas = []) {
+function showBrowserUndoPanel(outSug, undoInfo, recognizedCity) {
+  if (!outSug || !undoInfo) return;
+  const wasHidden = outSug.hidden;
+  outSug.innerHTML = `
+    <section class="suggest undo-suggest" role="status">
+      <div class="sug-icon" aria-hidden="true">↶</div>
+      <div class="sug-copy">
+        <div class="sug-title">Cidade aplicada: ${escapeHtml(recognizedCity || undoInfo.selectedCity || '')}</div>
+        <div class="sug-sub">A escolha pode ser desfeita e as sugestões serão exibidas novamente.</div>
+      </div>
+      <div class="sug-actions">
+        <button class="sug-pill undo-panel-button" type="button">Desfazer escolha</button>
+      </div>
+    </section>
+  `;
+  const button = outSug.querySelector('.undo-panel-button');
+  if (button) button.addEventListener('click', () => undoLastSuggestionChoice());
+  if (wasHidden) openSuggestWrap(outSug);
+  else updateSuggestPlacement(outSug, true);
+}
+function undoLastSuggestionChoice() {
+  if (!lastSuggestionChoice) return;
+  forgetAlias(lastSuggestionChoice.originalText);
+  lastSuggestionChoice = null;
+  hideDesktopSuggestOverlay();
+  buscar();
+  if (typeof focusAndSelectSearch === 'function') focusAndSelectSearch();
+}
+function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], aliasCanonico = null, listasEncontradas = [], recognizedCity = null, undoInfo = null) {
   const useDesktopSuggest = isDesktopRuntime() && !!window.desktopSuggest && typeof window.desktopSuggest.show === 'function';
   const outSug = useDesktopSuggest ? null : ensureOutSuggest();
   const meta = getStatusMeta(status, listasEncontradas);
-  renderCompactResult(meta);
+  renderCompactResult(meta, recognizedCity);
 
   if (status !== 'nao' && status !== 'dup') {
-    hideDesktopSuggestOverlay();
-    if (outSug) {
-      closeSuggestWrap(outSug);
-      outSug.innerHTML = '';
+    if (undoInfo) {
+      if (useDesktopSuggest) {
+        showDesktopSuggestOverlay({
+          mode: 'undo',
+          title: `Cidade aplicada: ${recognizedCity || undoInfo.selectedCity || ''}`,
+          subtitle: 'A escolha pode ser desfeita e as sugestões serão exibidas novamente.',
+          suggestions: [{ text: 'Desfazer escolha', category: 'nao', action: 'undo' }]
+        });
+      } else {
+        showBrowserUndoPanel(outSug, undoInfo, recognizedCity);
+      }
+    } else {
+      hideDesktopSuggestOverlay();
+      if (outSug) {
+        closeSuggestWrap(outSug);
+        outSug.innerHTML = '';
+      }
     }
     return;
   }

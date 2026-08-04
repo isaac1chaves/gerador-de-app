@@ -1,4 +1,19 @@
 const q = document.getElementById('q');
+if (q && q.isContentEditable) {
+  Object.defineProperty(q, 'value', {
+    configurable: true,
+    get() { return q.textContent || ''; },
+    set(value) { q.textContent = String(value ?? ''); }
+  });
+  q.select = () => {
+    const range = document.createRange();
+    range.selectNodeContents(q);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+  q.setSelectionRange = (start, end) => setEditorSelection(start, end);
+}
 const out = document.getElementById('out');
 const copyBtn = document.getElementById('copyBtn');
 

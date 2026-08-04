@@ -9,6 +9,8 @@ function hideElectronSuggestOverlay() {
 function buscar(rawOverride = null) {
   try {
     const raw = rawOverride === null ? (q.value || '') : String(rawOverride || '');
+    const undoInfo = rawOverride !== null && lastSuggestionChoice ? lastSuggestionChoice : null;
+    if (rawOverride === null) lastSuggestionChoice = null;
     if (!raw.trim()) {
       hideElectronSuggestOverlay();
       const outSug = ensureOutSuggest();
@@ -18,16 +20,18 @@ function buscar(rawOverride = null) {
     }
     clearHighlights();
     const cidadeBruta = extractCity(raw);
+    const visibleText = q.value || raw;
+    highlightCityByKey(visibleText, extractCity(visibleText));
     const keyRaw = normalize(cidadeBruta);
     const inAna = setAna.has(keyRaw), inBra = setBra.has(keyRaw), inCob = setCob.has(keyRaw);
     const listasEncontradas = [];
     if (inAna) listasEncontradas.push('ana');
     if (inBra) listasEncontradas.push('bra');
     if (inCob) listasEncontradas.push('nossa');
-    if (listasEncontradas.length >= 2) return void mostrarResultado(raw, cidadeBruta, 'dup', [], null, listasEncontradas);
-    if (inAna) return void mostrarResultado(raw, cidadeBruta, 'ana', [], null);
-    if (inBra) return void mostrarResultado(raw, cidadeBruta, 'bra', [], null);
-    if (inCob) return void mostrarResultado(raw, cidadeBruta, 'nossa', [], null);
+    if (listasEncontradas.length >= 2) return void mostrarResultado(raw, cidadeBruta, 'dup', [], null, listasEncontradas, normToOriginal.get(keyRaw) || cidadeBruta, undoInfo);
+    if (inAna) return void mostrarResultado(raw, cidadeBruta, 'ana', [], null, [], normToOriginal.get(keyRaw) || cidadeBruta, undoInfo);
+    if (inBra) return void mostrarResultado(raw, cidadeBruta, 'bra', [], null, [], normToOriginal.get(keyRaw) || cidadeBruta, undoInfo);
+    if (inCob) return void mostrarResultado(raw, cidadeBruta, 'nossa', [], null, [], normToOriginal.get(keyRaw) || cidadeBruta, undoInfo);
     const aliasPick = getDynamicAliasSuggestion(raw, cidadeBruta);
     const ranked = rankSuggestions(cidadeBruta, 3);
     let sugs = ranked.picks;
