@@ -262,3 +262,10 @@ function injectShell() {
 }
 
 window.addEventListener('DOMContentLoaded', injectShell);
+
+function reportUserInteraction() {
+  ipcRenderer.send('app:interaction');
+}
+['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'focus'].forEach((eventName) => {
+  window.addEventListener(eventName, reportUserInteraction, { capture: true, passive: true });
+});

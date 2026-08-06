@@ -1,5 +1,6 @@
 const ACTIVE_OPACITY = 1;
-const INACTIVE_OPACITY = 1;
+const IDLE_OPACITY = 0.68;
+const IDLE_DELAY_MS = 8000;
 const path = require('node:path');
 const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron');
 const { autoUpdater } = require('electron-updater');
@@ -23,6 +24,8 @@ let suggestWindow = null;
 let suggestMetrics = { height: 0 };
 let currentSuggestPayload = null;
 let currentSuggestDirection = 'down';
+let idleTimer = null;
+let appIsIdle = false;
 
 log.transports.file.level = 'info';
 autoUpdater.logger = log;
@@ -88,7 +91,25 @@ function isAnyAppWindowFocused() {
   return mainFocused || suggestFocused;
 }
 function getAppOpacity() {
-  return isAnyAppWindowFocused() ? ACTIVE_OPACITY : INACTIVE_OPACITY;
+  return appIsIdle ? IDLE_OPACITY : ACTIVE_OPACITY;
+}
+function applyAppOpacity() {
+  const opacity = getAppOpacity();
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.setOpacity(opacity);
+  if (suggestWindow && !suggestWindow.isDestroyed()) suggestWindow.setOpacity(opacity);
+}
+function scheduleIdleFade() {
+  if (idleTimer) clearTimeout(idleTimer);
+  appIsIdle = false;
+  applyAppOpacity();
+  idleTimer = setTimeout(() => {
+    appIsIdle = true;
+    applyAppOpacity();
+  }, IDLE_DELAY_MS);
+}
+function stopIdleFade() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = null;
 }
 function syncSuggestWindowOpacity() {
   if (!suggestWindow || suggestWindow.isDestroyed()) return;
@@ -126,14 +147,8 @@ function ensureSuggestWindow() {
   win.setAlwaysOnTop(true);
   win.setOpacity(getAppOpacity());
   win.loadFile(path.join(__dirname, 'suggest.html'));
-  win.on('focus', () => {
-    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.setOpacity(ACTIVE_OPACITY);
-    if (!win.isDestroyed()) win.setOpacity(ACTIVE_OPACITY);
-  });
-  win.on('blur', () => {
-    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.setOpacity(getAppOpacity());
-    if (!win.isDestroyed()) win.setOpacity(getAppOpacity());
-  });
+  win.on('focus', () => scheduleIdleFade());
+  win.on('blur', () => applyAppOpacity());
   win.on('closed', () => {
     if (suggestWindow === win) {
       suggestWindow = null;
@@ -261,12 +276,12 @@ function createMainWindow() {
   });
   const webContentsId = win.webContents.id;
   contentMetrics.set(webContentsId, { baseHeight: INITIAL_CONTENT_HEIGHT, anchorBottom: false });
-  win.on('focus', () => { win.setOpacity(ACTIVE_OPACITY); syncSuggestWindowOpacity(); });
-  win.on('blur', () => { win.setOpacity(getAppOpacity()); syncSuggestWindowOpacity(); });
+  win.on('focus', () => scheduleIdleFade());
+  win.on('blur', () => applyAppOpacity());
   win.once('ready-to-show', () => {
     if (!win.isDestroyed()) {
       win.setAlwaysOnTop(true);
-      win.setOpacity(ACTIVE_OPACITY);
+      scheduleIdleFade();
       win.show();
       syncSuggestWindowVisibility();
     }
@@ -335,6 +350,11 @@ if (gotTheLock) {
     ipcMain.on('app:close', (event) => {
       const win = BrowserWindow.fromWebContents(event.sender);
       if (win) win.close();
+    });
+    ipcMain.on('app:interaction', (event) => {
+      const win = BrowserWindow.fromWebContents(event.sender);
+      if (!win || (win !== mainWindow && win !== suggestWindow)) return;
+      scheduleIdleFade();
     });
     ipcMain.on('suggest:show', (event, payload) => {
       const win = BrowserWindow.fromWebContents(event.sender);
@@ -419,6 +439,7 @@ if (gotTheLock) {
     }
   });
 }
+app.on('before-quit', stopIdleFade);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });

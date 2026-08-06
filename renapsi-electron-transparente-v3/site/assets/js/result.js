@@ -13,7 +13,7 @@ function renderCompactResult(statusMeta, recognizedCity = null) {
     <div class="result-main">
       <div class="result-pill ${escapeHtml(statusMeta.cls)}${recognizedCity ? ' has-recognized' : ''}">
         <span class="title">${escapeHtml(statusMeta.title)}</span>
-        <span class="sub"><span class="recognized-city">${recognizedCity ? `✓ ${escapeHtml(recognizedCity)}` : escapeHtml(statusMeta.detail)}</span></span>
+        <span class="sub">${recognizedCity ? `<span class="status-check" aria-hidden="true">✓</span>` : ''}<span class="recognized-city">${recognizedCity ? escapeHtml(recognizedCity) : escapeHtml(statusMeta.detail)}</span></span>
       </div>
     </div>
   `;

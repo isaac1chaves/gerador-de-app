@@ -16,3 +16,10 @@ contextBridge.exposeInMainWorld('suggestOverlay', {
   reportMetrics: (metrics) => ipcRenderer.send('suggest:metrics', metrics),
   pick: (payload) => ipcRenderer.send('suggest:pick', payload)
 });
+
+function reportSuggestInteraction() {
+  ipcRenderer.send('app:interaction');
+}
+['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart', 'focus'].forEach((eventName) => {
+  window.addEventListener(eventName, reportSuggestInteraction, { capture: true, passive: true });
+});

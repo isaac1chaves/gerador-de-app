@@ -10,12 +10,12 @@
 <body>
   <main class="app-shell" aria-label="Pesquisa de Abrangência">
     <section class="app-stage">
-      <div id="outSuggest" class="suggest-wrap" hidden></div>
+      <div id="outSuggest" class="suggest-wrap" role="region" aria-label="Sugestões de municípios" hidden></div>
       <div class="topbar">
         <button id="copyBtn" class="copy-btn" type="button" aria-label="Colar texto da área de transferência">📋</button>
         <div class="search field">
           <label class="sr-only" for="q">Pesquisar município</label>
-          <div id="q" class="search-editor" contenteditable="true" role="textbox" aria-label="Pesquisar município" data-placeholder="Cole ou digite um texto contendo a cidade." spellcheck="false"></div>
+          <div id="q" class="search-editor" contenteditable="true" role="textbox" aria-label="Pesquisar município" aria-autocomplete="list" aria-controls="outSuggest" aria-expanded="false" data-placeholder="Cole ou digite um texto contendo a cidade." spellcheck="false"></div>
         </div>
         <div id="out" class="result" aria-live="polite">
           <div class="result-main">

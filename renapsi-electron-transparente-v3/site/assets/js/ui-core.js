@@ -141,6 +141,7 @@ function openSuggestWrap(wrap) {
   emitLayoutBatch('renapsi:layout-batch-start');
 
   wrap.hidden = false;
+  if (q) q.setAttribute('aria-expanded', 'true');
   wrap.classList.add('is-open');
   wrap.classList.add('is-measuring');
 
@@ -188,6 +189,7 @@ function hardResetSuggestWrap(wrap) {
   wrap.innerHTML = '';
   wrap.classList.remove('is-open', 'is-measuring');
   wrap.hidden = true;
+  if (q) q.setAttribute('aria-expanded', 'false');
 
   requestAnimationFrame(() => {
     wrap.classList.remove('dir-up', 'dir-down');

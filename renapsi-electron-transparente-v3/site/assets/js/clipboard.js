@@ -1,13 +1,18 @@
-const COPYBTN_DEFAULT_ICON = '📋';
+const COPYBTN_DEFAULT_ICON = '';
 let copyBtnTimer = null;
 function setCopyBtnIcon(icon, { copiedClass = false, duration = 900 } = {}) {
   if (!copyBtn) return;
   if (copyBtnTimer) { clearTimeout(copyBtnTimer); copyBtnTimer = null; }
   copyBtn.textContent = icon;
   copyBtn.classList.toggle('is-copied', !!copiedClass);
+  copyBtn.classList.toggle('is-warning', icon === '⚠');
+  copyBtn.setAttribute('aria-label', copiedClass ? 'Texto colado' : icon === '⚠' ? 'Não foi possível colar' : 'Colar texto da área de transferência');
+  copyBtn.title = copiedClass ? 'Texto colado' : icon === '⚠' ? 'Não foi possível colar' : 'Colar da área de transferência';
   copyBtnTimer = setTimeout(() => {
     copyBtn.textContent = COPYBTN_DEFAULT_ICON;
-    copyBtn.classList.remove('is-copied');
+    copyBtn.classList.remove('is-copied', 'is-warning');
+    copyBtn.setAttribute('aria-label', 'Colar texto da área de transferência');
+    copyBtn.title = 'Colar da área de transferência';
     copyBtnTimer = null;
   }, duration);
 }
