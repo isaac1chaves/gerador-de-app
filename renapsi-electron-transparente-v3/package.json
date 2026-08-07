@@ -1,6 +1,6 @@
 {
   "name": "renapsi-electron-transparente-v3",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "RenGeo",
   "main": "electron/main.js",
   "author": "Renapsi",
