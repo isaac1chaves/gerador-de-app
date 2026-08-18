@@ -28,3 +28,12 @@ console.log('Lógica validada: normalização, extração, grupos, grafia e suge
 const mainSource = fs.readFileSync(path.join(root, 'site/assets/js/main.js'), 'utf8');
 assert.match(mainSource, /pointerdown[\s\S]*event\.preventDefault\(\);[\s\S]*focusAndSelectSearch\(\);/);
 console.log('Interação validada: clique no campo seleciona todo o texto.');
+
+
+const resultSource = fs.readFileSync(path.join(root, 'site/assets/js/result.js'), 'utf8');
+assert.match(resultSource, /const UNDO_PANEL_TIMEOUT_MS = 5000;/);
+assert.match(resultSource, /function scheduleUndoPanelClose\(outSug = null\)/);
+assert.match(resultSource, /scheduleUndoPanelClose\(\);/);
+assert.match(resultSource, /scheduleUndoPanelClose\(outSug\);/);
+assert.match(resultSource, /function undoLastSuggestionChoice\(\) \{\s*clearUndoPanelTimer\(\);/);
+console.log('Interação validada: painel de desfazer fecha automaticamente após 5 segundos.');

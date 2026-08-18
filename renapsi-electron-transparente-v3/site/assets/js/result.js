@@ -1,3 +1,31 @@
+const UNDO_PANEL_TIMEOUT_MS = 5000;
+let undoPanelTimer = null;
+let undoPanelGeneration = 0;
+
+function clearUndoPanelTimer() {
+  undoPanelGeneration += 1;
+  if (!undoPanelTimer) return;
+  clearTimeout(undoPanelTimer);
+  undoPanelTimer = null;
+}
+
+function scheduleUndoPanelClose(outSug = null) {
+  clearUndoPanelTimer();
+  const generation = undoPanelGeneration;
+
+  undoPanelTimer = setTimeout(() => {
+    if (generation !== undoPanelGeneration) return;
+
+    hideDesktopSuggestOverlay();
+    if (outSug) {
+      closeSuggestWrap(outSug);
+      outSug.innerHTML = '';
+    }
+
+    undoPanelTimer = null;
+  }, UNDO_PANEL_TIMEOUT_MS);
+}
+
 function getStatusMeta(status, listasEncontradas = []) {
   if (status === SEARCH_STATUS.ANAPOLIS) return { cls: SEARCH_STATUS.ANAPOLIS, title: 'Anápolis', detail: 'Cidade atendida pelo núcleo de Anápolis.' };
   if (status === SEARCH_STATUS.BRASILIA) return { cls: SEARCH_STATUS.BRASILIA, title: 'Brasília', detail: 'Cidade atendida pelo núcleo de Brasília.' };
@@ -115,6 +143,7 @@ function showBrowserUndoPanel(outSug, undoInfo, recognizedCity) {
   else updateSuggestPlacement(outSug, true);
 }
 function undoLastSuggestionChoice() {
+  clearUndoPanelTimer();
   if (!lastSuggestionChoice) return;
   forgetAlias(lastSuggestionChoice.originalText);
   lastSuggestionChoice = null;
@@ -137,10 +166,13 @@ function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], alia
           subtitle: 'A escolha pode ser desfeita e as sugestões serão exibidas novamente.',
           suggestions: [{ text: 'Desfazer escolha', category: SEARCH_STATUS.NOT_FOUND, action: 'undo' }]
         });
+        scheduleUndoPanelClose();
       } else {
         showBrowserUndoPanel(outSug, undoInfo, recognizedCity);
+        scheduleUndoPanelClose(outSug);
       }
     } else {
+      clearUndoPanelTimer();
       hideDesktopSuggestOverlay();
       if (outSug) {
         closeSuggestWrap(outSug);
@@ -150,6 +182,7 @@ function mostrarResultado(termOriginal, focoCidade, status, sugestoes = [], alia
     return;
   }
 
+  clearUndoPanelTimer();
   const topTitle = status === SEARCH_STATUS.DUPLICATE ? 'Precisa revisar o município' : 'Não encontrei uma correspondência exata';
   let topSub = status === SEARCH_STATUS.DUPLICATE ? meta.detail : 'Escolha uma sugestão parecida para aplicar na pesquisa.';
   if (status === SEARCH_STATUS.NOT_FOUND && focoCidade) topSub = `Talvez você tenha querido dizer algo próximo de “${focoCidade}”.`;
