@@ -1,0 +1,79 @@
+{
+  "name": "renapsi-electron-transparente-v3",
+  "version": "7.0.1",
+  "description": "RenGeo",
+  "main": "electron/main.js",
+  "author": "Renapsi",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "dist": "electron-builder --win nsis --publish never",
+    "release": "electron-builder --win nsis --publish always",
+    "check:syntax": "node --check electron/main.js && node --check electron/config.js && node --check electron/ipc-validators.js && node --check electron/window-geometry.js && node --check electron/auto-updater.js && node --check electron/preload.js && node --check electron/suggest-preload.js && node --check site/assets/js/utils.js && node --check site/assets/js/data.js && node --check site/assets/js/search-engine.js && node --check site/assets/js/ui-core.js && node --check site/assets/js/chips.js && node --check site/assets/js/result.js && node --check site/assets/js/search-actions.js && node --check site/assets/js/clipboard.js && node --check site/assets/js/main.js",
+    "test:data": "node scripts/validate-data.js",
+    "test": "npm run check:syntax && npm run test:data && npm run test:logic",
+    "test:logic": "node scripts/test-logic.js"
+  },
+  "devDependencies": {
+    "electron": "^41.1.1",
+    "electron-builder": "^26.8.2"
+  },
+  "dependencies": {
+    "electron-log": "^5.2.4",
+    "electron-updater": "^6.6.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/isaac1chaves/gerador-de-app.git"
+  },
+  "build": {
+    "appId": "com.renapsi.buscaabrangencia",
+    "productName": "Pesquisa de Abrangencia",
+    "copyright": "Copyright © 2026 RENAPSI. Todos os direitos reservados.",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**/*",
+      "site/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "isaac1chaves",
+      "repo": "gerador-de-app",
+      "releaseType": "release"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "license": "build/license.txt",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "artifactName": "${productName} Setup ${version}.${ext}",
+      "uninstallDisplayName": "Pesquisa de Abrangencia"
+    }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

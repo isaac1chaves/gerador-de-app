@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://github.com https://api.github.com; object-src 'none'; base-uri 'none'; frame-ancestors 'none'" />
+  <title>Pesquisa de Abrangência</title>
+  <link rel="stylesheet" href="./assets/css/app.css" />
+</head>
+<body>
+  <main class="app-shell" aria-label="Pesquisa de Abrangência">
+    <section class="app-stage">
+      <div id="outSuggest" class="suggest-wrap" role="region" aria-label="Sugestões de municípios" hidden></div>
+      <div class="topbar">
+        <button id="copyBtn" class="copy-btn" type="button" aria-label="Colar texto da área de transferência">📋</button>
+        <div class="search field">
+          <label class="sr-only" for="q">Pesquisar município</label>
+          <div id="q" class="search-editor" contenteditable="true" role="textbox" aria-label="Pesquisar município" aria-autocomplete="list" aria-controls="outSuggest" aria-expanded="false" data-placeholder="Cole ou digite um texto contendo a cidade." spellcheck="false"></div>
+        </div>
+        <div id="out" class="result" aria-live="polite">
+          <div class="result-main">
+            <div class="result-pill is-empty">
+              <span class="title"></span>
+              <span class="sub">Digite o município</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="./assets/js/utils.js"></script>
+  <script src="./assets/js/data.js"></script>
+  <script src="./assets/js/search-engine.js"></script>
+  <script src="./assets/js/ui-core.js"></script>
+  <script src="./assets/js/chips.js"></script>
+  <script src="./assets/js/result.js"></script>
+  <script src="./assets/js/search-actions.js"></script>
+  <script src="./assets/js/clipboard.js"></script>
+  <script src="./assets/js/main.js"></script>
+</body>
+</html>
